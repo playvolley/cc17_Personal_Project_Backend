@@ -1,0 +1,100 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String
+  isAdmin   Boolean? @default(false)
+  point     Int? @default(0)
+  username  String  @unique
+  password  String
+  orders    Order[]
+  carts     Cart[]
+  tables    Table[]
+}
+
+model Order {
+  id         Int        @id @default(autoincrement())
+  table_id   Int?
+  user_id    Int
+  date_order DateTime @default(now()) @db.Timestamp(0)
+  user       User       @relation(fields: [user_id], references: [id])
+  table      Table?     @relation(fields: [table_id], references: [id])
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  order_id   Int
+  product_id Int
+  amount     Int
+  price      Float
+  discount   Float
+  status     OrderStatus
+  order      Order    @relation(fields: [order_id], references: [id])
+  product    Product  @relation(fields: [product_id], references: [id])
+  payments   Payment[]
+}
+
+model Product {
+  id         Int        @id @default(autoincrement())
+  name       String
+  price      Float
+  image      String
+  carts      Cart[]
+  orderItems OrderItem[]
+}
+
+model Cart {
+  id         Int      @id @default(autoincrement())
+  product_id Int
+  user_id    Int
+  name       String
+  amount     Int
+  price      Float
+  user       User     @relation(fields: [user_id], references: [id])
+  product    Product  @relation(fields: [product_id], references: [id])
+}
+
+model Payment {
+  id          Int         @id @default(autoincrement())
+  order_item_id Int
+  status      PaymentStatus
+  date_payment DateTime @updatedAt @db.Timestamp(0)
+  total       Float
+  method      PaymentMethod
+  orderItem   OrderItem   @relation(fields: [order_item_id], references: [id])
+}
+
+model Table {
+  id        Int      @id @default(autoincrement())
+  user_id   Int?
+  status    Boolean @default(true)
+  user      User?    @relation(fields: [user_id], references: [id])
+  orders    Order[]
+}
+
+enum OrderStatus {
+  PENDING
+  CANCEL
+  SUCCESS
+}
+
+enum PaymentStatus {
+  NOTYET
+  COMPLETED
+}
+
+enum PaymentMethod {
+  Cash
+  Promptpay
+  Credit
+}
