@@ -10,6 +10,7 @@ const authenticate = require("./middlewares/authenticate");
 const morgan = require("morgan");
 const cartRouter = require("./routes/cart-route");
 const orderRouter = require("./routes/order-route");
+const paymentRouter = require("./routes/payment-route");
 
 app.use(cors());
 
@@ -24,7 +25,7 @@ app.use("/auth", authRouter);
 app.use("/products", authenticate, productRouter);
 app.use("/cart", authenticate, cartRouter);
 app.use("/orders", authenticate, orderRouter);
-
+app.use("/payments", authenticate, paymentRouter);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 

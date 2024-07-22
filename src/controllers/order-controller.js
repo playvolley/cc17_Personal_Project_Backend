@@ -23,10 +23,10 @@ orderController.postOrder = async (req, res, next) => {
         table_id: tableId,
       },
     });
-    console.log("createdOrder = ", createdOrder);
+    //console.log("createdOrder = ", createdOrder);
     const orderId = createdOrder.id;
-    console.log("orderId YES = ", orderId);
-    console.log("dataFromReq = ", data);
+    //console.log("orderId YES = ", orderId);
+    //console.log("dataFromReq = ", data);
 
     const createdOrderItems = await prisma.orderItem.createMany({
       data: data.map((item) => ({
@@ -38,6 +38,7 @@ orderController.postOrder = async (req, res, next) => {
         status: "PENDING",
       })),
     });
+
     console.log("createdOrderItems", createdOrderItems);
     res.status(201).json("Order has created");
   } catch (error) {
