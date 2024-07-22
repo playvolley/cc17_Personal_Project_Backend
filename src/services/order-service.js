@@ -13,4 +13,10 @@ orderService.getAllOrder = () =>
     include: { orderItems: true },
   });
 
+orderService.updateStatus = (id, status) =>
+  prisma.orderItem.update({
+    where: { id: parseInt(id) },
+    data: { status },
+  });
+
 module.exports = orderService;

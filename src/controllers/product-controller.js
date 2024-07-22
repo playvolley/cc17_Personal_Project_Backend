@@ -17,7 +17,7 @@ productController.postProduct = async (req, res) => {
     const newProduct = await prisma.product.create({
       data: {
         name,
-        price,
+        price: parseInt(price),
         image,
       },
     });
@@ -31,15 +31,34 @@ productController.updateProduct = async (req, res) => {
   const { id } = req.params;
   const { name, price, image } = req.body;
   try {
+    // Validate input data
+    if (!name || !price || !image) {
+      return res
+        .status(400)
+        .json({ message: "All fields (name, price, image) are required" });
+    }
+
     const updatedProduct = await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
         name,
-        price,
+        price: parseInt(price),
         image,
       },
     });
     res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+productController.delProduct = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleteProduct = await prisma.product.delete({
+      where: { id: parseInt(id) },
+    });
+    res.status(200).json(deleteProduct);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

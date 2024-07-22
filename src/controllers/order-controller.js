@@ -4,9 +4,8 @@ const orderController = {};
 
 orderController.getOrder = async (req, res, next) => {
   try {
-    const id = req.body.id;
-    //console.log("order id = ", req.body.id);
-    const result = await orderService.getOrder(id);
+    console.log("query string id=>", req.query.id);
+    const result = await orderService.getOrder(+req.query.id);
     res.send(result);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -28,6 +27,7 @@ orderController.postOrder = async (req, res, next) => {
     const orderId = createdOrder.id;
     console.log("orderId YES = ", orderId);
     console.log("dataFromReq = ", data);
+
     const createdOrderItems = await prisma.orderItem.createMany({
       data: data.map((item) => ({
         order_id: orderId,
@@ -46,5 +46,26 @@ orderController.postOrder = async (req, res, next) => {
 };
 
 orderController.delAllOrder = async (req, res, next) => {};
+
+orderController.getAllItemOrder = async (req, res, next) => {
+  try {
+    const result = await orderService.getAllOrder();
+    res.send(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+orderController.updateStatus = async (req, res, next) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  console.log("Update ID=", id, "Status=", status);
+  try {
+    const result = await orderService.updateStatus(id, status);
+    res.send(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 module.exports = orderController;
