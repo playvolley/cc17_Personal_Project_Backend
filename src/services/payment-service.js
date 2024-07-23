@@ -19,4 +19,16 @@ paymentService.checkPaymentExists = async (orderItemIds) => {
   return existingPayments.length > 0;
 };
 
+paymentService.updateStatus = (id, status) =>
+  prisma.payment.update({
+    where: { id: parseInt(id) },
+    data: { status },
+  });
+
+paymentService.updateMethod = (id, method) =>
+  prisma.payment.update({
+    where: { id: parseInt(id) },
+    data: { method },
+  });
+
 module.exports = paymentService;

@@ -2,7 +2,14 @@ const prisma = require("../models/prisma");
 const paymentService = require("../services/payment-service");
 const paymentController = {};
 
-paymentController.getPayment = (req, res, next) => {};
+paymentController.getPayment = async (req, res, next) => {
+  try {
+    const paymentResult = await paymentService.getPayment();
+    res.send(paymentResult);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 paymentController.postPayment = async (req, res, next) => {
   const data = req.body;
@@ -30,10 +37,34 @@ paymentController.postPayment = async (req, res, next) => {
       return;
     }
 
-    const createPayment = await paymentService.postPayment(payments);
+    await paymentService.postPayment(payments);
     res.status(201).json({ message: "Created Payment Success" });
   } catch (err) {
     console.log(err.message);
+  }
+};
+
+paymentController.updateStatus = async (req, res, next) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  console.log("Update ID=", id, "Status=", status);
+  try {
+    const result = await paymentService.updateStatus(id, status);
+    res.send(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+paymentController.updateMethod = async (req, res, next) => {
+  const { id } = req.params;
+  const { method } = req.body;
+  console.log("Update ID=", id, "method=", method);
+  try {
+    const result = await paymentService.updateMethod(id, method);
+    res.send(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 

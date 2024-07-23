@@ -7,4 +7,8 @@ const paymentRouter = express.Router();
 paymentRouter.get("/", paymentController.getPayment);
 paymentRouter.post("/", paymentController.postPayment);
 
+paymentRouter.patch("/admin/:id", paymentController.updateStatus);
+
+paymentRouter.patch("/admin/method/:id", paymentController.updateMethod);
+
 module.exports = paymentRouter;
