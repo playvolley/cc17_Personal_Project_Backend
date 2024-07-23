@@ -12,7 +12,13 @@ const cartRouter = require("./routes/cart-route");
 const orderRouter = require("./routes/order-route");
 const paymentRouter = require("./routes/payment-route");
 
-app.use(cors());
+const corsOptions = {
+  origin: "*", // Allow all origins
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allowed methods
+  allowedHeaders: "Content-Type,Authorization", // Allowed headers
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(morgan("dev"));
